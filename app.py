@@ -3,16 +3,18 @@ from transformers import pipeline
 import torch
 
 # Set page config
-st.set_page_config(
-    page_title="Text Summarizer",
-    page_icon="📝",
-    layout="wide"
-)
+st.set_page_config(page_title="Text Summarizer", page_icon="📝", layout="wide")
+
 
 # Initialize the summarization pipeline
 @st.cache_resource
 def load_summarizer():
-    return pipeline("summarization", model="facebook/bart-large-cnn", device=0 if torch.cuda.is_available() else -1)
+    return pipeline(
+        "summarization",
+        model="facebook/bart-large-cnn",
+        device=0 if torch.cuda.is_available() else -1,
+    )
+
 
 def main():
     st.title("📝 Text Summarizer")
@@ -20,9 +22,7 @@ def main():
 
     # Text input area
     text_input = st.text_area(
-        "Enter your text here:",
-        height=300,
-        placeholder="Paste your text here..."
+        "Enter your text here:", height=300, placeholder="Paste your text here..."
     )
 
     # Add a button to generate summary
@@ -39,14 +39,19 @@ def main():
             with st.spinner("Generating summary..."):
                 # Split text into chunks if it's too long (BART has a max input length)
                 max_chunk_length = 1024
-                chunks = [text_input[i:i + max_chunk_length] for i in range(0, len(text_input), max_chunk_length)]
-                
+                chunks = [
+                    text_input[i : i + max_chunk_length]
+                    for i in range(0, len(text_input), max_chunk_length)
+                ]
+
                 summaries = []
                 for chunk in chunks:
                     # Generate summary for each chunk
-                    summary = summarizer(chunk, max_length=130, min_length=30, do_sample=False)
-                    summaries.append(summary[0]['summary_text'])
-                
+                    summary = summarizer(
+                        chunk, max_length=130, min_length=30, do_sample=False
+                    )
+                    summaries.append(summary[0]["summary_text"])
+
                 # Combine summaries if there were multiple chunks
                 final_summary = " ".join(summaries)
 
@@ -62,5 +67,6 @@ def main():
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
 
+
 if __name__ == "__main__":
-    main() 
+    main()

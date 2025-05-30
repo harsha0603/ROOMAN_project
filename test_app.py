@@ -2,9 +2,12 @@ import unittest
 from transformers import pipeline
 import torch
 
+
 class TestSummarizer(unittest.TestCase):
     def setUp(self):
-        self.summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=-1)
+        self.summarizer = pipeline(
+            "summarization", model="facebook/bart-large-cnn", device=-1
+        )
 
     def test_summarization(self):
         # Test with a simple input text
@@ -16,16 +19,19 @@ class TestSummarizer(unittest.TestCase):
         machines that mimic and display "human" cognitive skills that are associated with the human mind, such 
         as "learning" and "problem-solving".
         """
-        
+
         # Generate summary
-        summary = self.summarizer(test_text, max_length=130, min_length=30, do_sample=False)
-        
+        summary = self.summarizer(
+            test_text, max_length=130, min_length=30, do_sample=False
+        )
+
         # Basic assertions
         self.assertIsInstance(summary, list)
         self.assertGreater(len(summary), 0)
-        self.assertIn('summary_text', summary[0])
-        self.assertIsInstance(summary[0]['summary_text'], str)
-        self.assertGreater(len(summary[0]['summary_text']), 0)
+        self.assertIn("summary_text", summary[0])
+        self.assertIsInstance(summary[0]["summary_text"], str)
+        self.assertGreater(len(summary[0]["summary_text"]), 0)
 
-if __name__ == '__main__':
-    unittest.main() 
+
+if __name__ == "__main__":
+    unittest.main()
